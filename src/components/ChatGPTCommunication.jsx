@@ -1,5 +1,8 @@
+// ChatGPTCommunication.jsx
+
 import React, { Component } from 'react';
 import axios from 'axios';
+import SpeakTextComponent from './SpeakTextComponent';
 
 class ChatGPTCommunication extends Component {
   constructor(props) {
@@ -7,16 +10,10 @@ class ChatGPTCommunication extends Component {
     this.state = {
       loading: false,
       error: null,
-      userMessage: '',  // Add state for userMessage
-      aiResponse: '',  // Add state for aiResponse
+      userMessage: '',
+      aiResponse: '',
     };
   }
-
-  speakText = (text) => {
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
-    synth.speak(utterance);
-  };
 
   async sendToChatGPT(transcription) {
     try {
@@ -35,11 +32,12 @@ class ChatGPTCommunication extends Component {
               content: `I want you to act as a spoken English teacher and improver. 
               you will reply to me in English 
               to practice my spoken English. I want you to keep your reply neat,
-               limiting the reply to 30 words. correct my grammar mistakes.
+               limiting the reply to 40 words. correct my grammar mistakes.
                  ask me a question in your reply. 
                  you could ask me a question first. Remember,
                   I want you to correct my grammar mistakes. after that put "|" and
-                  Give 3 suggestions for sentences for me to answer you.`,
+                  Give 3 suggestions for sentences for me to answer you. 
+                  and reply If the sentence is correct, If not, provide the correct sentence.`,
               // I want you to act as an English teacher I will write you sentences and you will only answer as flow 
               // 1. If the sentence is correct, answer "correct". If not, provide the correct sentence.
               // 2. Continue the conversation. The answer should not be longer than 30 words and entertain.
@@ -58,7 +56,7 @@ class ChatGPTCommunication extends Component {
           },
         }
       );
-  
+
       const chatGPTResponse = response.data.choices[0].message.content;
       this.setState({ aiResponse: chatGPTResponse, loading: false });
       const responseParts = chatGPTResponse.split('|');
@@ -74,27 +72,26 @@ class ChatGPTCommunication extends Component {
       this.setState({ loading: false, error: 'An error occurred. Please try again.' });
     }
   }
-  
 
   render() {
     const { loading, error, userMessage, aiResponse } = this.state;
     const responseParts = aiResponse.split('|');
+
     return (
+      <div>
         <div>
           <div>
-            <div>
-              <strong>User:</strong> {userMessage}
-            </div>
-            <div>
-              <strong>AI English Teacher:</strong> {responseParts[0]}
-              <br /> <br />
-              {responseParts[1]}
-            </div>
+            <strong>User:</strong> {userMessage}
           </div>
-          <button onClick={() => this.speakText(responseParts[0])} disabled={loading}>
-            Speak AI Response
-          </button>
+          <div>
+            <strong>AI English Teacher:</strong> {responseParts[0]}
+            <br /> <br />
+            {responseParts[1]}
+
+          </div>
         </div>
+        <SpeakTextComponent text={responseParts[0]} loading={loading} />
+      </div>
     );
   }
 }
