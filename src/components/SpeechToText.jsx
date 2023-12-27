@@ -19,7 +19,7 @@ class SpeechToText extends Component {
 
     this.startListening = this.startListening.bind(this);
     this.stopListening = this.stopListening.bind(this);
-    this.clearTranscription = this.clearTranscription.bind(this);
+   
   }
 
   startListening() {
@@ -45,11 +45,8 @@ class SpeechToText extends Component {
     this.setState({ listening: false });
   }
 
-  clearTranscription() {
-    this.setState({ transcription: '' });
-  }
-
   render() {
+ 
     const { listening, transcription } = this.state;
 
     return (
@@ -59,9 +56,6 @@ class SpeechToText extends Component {
         </button>
         <button onClick={this.stopListening} disabled={!listening}>
           Stop Listening
-        </button>
-        <button onClick={this.clearTranscription}>
-          Clear Transcription
         </button>
         <p>Transcription: {transcription}</p>
       </div>

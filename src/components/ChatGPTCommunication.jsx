@@ -20,7 +20,7 @@ class ChatGPTCommunication extends Component {
 
   async sendToChatGPT(transcription) {
     try {
-      const apiKey = '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'; // Replace with your actual OpenAI API key
+      const apiKey = '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'; // Replace with your actual OpenAI API key
       const apiUrl = 'https://api.openai.com/v1/chat/completions';
   
       this.setState({ loading: true, error: null });
@@ -32,14 +32,14 @@ class ChatGPTCommunication extends Component {
           messages: [
             {
               role: 'system',
-              content: `1. I want you to act as a spoken English teacher and improver. 
-              I will speak to you in English and you will reply to me in English 
+              content: `I want you to act as a spoken English teacher and improver. 
+              you will reply to me in English 
               to practice my spoken English. I want you to keep your reply neat,
-               limiting the reply to 30 words. I want you to correct my grammar mistakes.
-                I want you to ask me a question in your reply. Now let's start practicing,
+               limiting the reply to 30 words. correct my grammar mistakes.
+                 ask me a question in your reply. 
                  you could ask me a question first. Remember,
-                  I want you to correct my grammar mistakes.
-                  2. Give 3 suggestions for sentences for me to answer you.`,
+                  I want you to correct my grammar mistakes. after that put "|" and
+                  Give 3 suggestions for sentences for me to answer you.`,
               // I want you to act as an English teacher I will write you sentences and you will only answer as flow 
               // 1. If the sentence is correct, answer "correct". If not, provide the correct sentence.
               // 2. Continue the conversation. The answer should not be longer than 30 words and entertain.
@@ -61,16 +61,11 @@ class ChatGPTCommunication extends Component {
   
       const chatGPTResponse = response.data.choices[0].message.content;
       this.setState({ aiResponse: chatGPTResponse, loading: false });
-  
+      const responseParts = chatGPTResponse.split('|');
       // Speak the AI response
-      this.speakText(chatGPTResponse);
+      this.speakText(responseParts[0]);
   
-      // Process the AI response and lead the next step in the conversation
-      const nextStep = this.determineNextStep(transcription, chatGPTResponse);
-  
-      // Here you can add logic to speak the response or display it in your UI
-      // For simplicity, I'm logging it to the console.
-      console.log('Next Step:', nextStep);
+   
     } catch (error) {
       console.error(
         'Error sending transcription to ChatGPT:',
@@ -81,38 +76,25 @@ class ChatGPTCommunication extends Component {
   }
   
 
-  determineNextStep(userMessage, aiResponse) {
-    // Example logic: Check if the user is asking a question
-    if (userMessage.toLowerCase().includes('how') && userMessage.toLowerCase().includes('do')) {
-      return "It looks like you're asking about a process. Let me explain in more detail.";
-    } else {
-      return "Let's continue our discussion.";
-    }
-  }
-
   render() {
     const { loading, error, userMessage, aiResponse } = this.state;
-
+    const responseParts = aiResponse.split('|');
     return (
-      <div>
         <div>
-          {/* ... (previous code) */}
-
           <div>
             <div>
               <strong>User:</strong> {userMessage}
             </div>
             <div>
-              <strong>AI English Teacher:</strong> {aiResponse}
+              <strong>AI English Teacher:</strong> {responseParts[0]}
+              <br /> <br />
+              {responseParts[1]}
             </div>
           </div>
-
-          {/* Add a button to trigger text-to-speech */}
-          <button onClick={() => this.speakText(aiResponse)} disabled={loading}>
+          <button onClick={() => this.speakText(responseParts[0])} disabled={loading}>
             Speak AI Response
           </button>
         </div>
-      </div>
     );
   }
 }
