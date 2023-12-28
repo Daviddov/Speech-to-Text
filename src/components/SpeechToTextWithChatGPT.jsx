@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
 
+
 class SpeechToTextWithChatGPT extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +32,7 @@ class SpeechToTextWithChatGPT extends Component {
       <div>
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <ChatGPTCommunication apiKey={apiKey} userMessage={transcription} ref={(ref) => (this.chatGPTCommunicationRef = ref)} />
+
       </div>
     );
   }

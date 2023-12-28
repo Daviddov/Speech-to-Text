@@ -16,6 +16,19 @@ class ChatGPTCommunication extends Component {
     };
   }
 
+  
+  async componentDidUpdate(prevProps, prevState) {
+    const { aiResponse } = this.state;
+
+    // Check if aiResponse has changed
+    if (aiResponse !== prevState.aiResponse) {
+      // Start the audio stream only if the response is non-empty
+      if (aiResponse.trim() !== '') {
+        this.openAITTSComponentRef.streamAudio();
+      }
+    }
+  }
+
   async sendToChatGPT(transcription) {
     try {
       const { apiKey } = this.props;
@@ -31,14 +44,15 @@ class ChatGPTCommunication extends Component {
             {
               role: 'system',
               content: `I want you to act as a spoken English teacher and improver. 
-              you will reply to me in English 
-              to practice my spoken English. I want you to keep your reply neat,
-               limiting the reply to 40 words. correct my grammar mistakes.
-                 ask me a question in your reply. 
-                 you could ask me a question first. Remember,
-                  I want you to correct my grammar mistakes. after that put "|" and
-                  Give 3 suggestions for sentences for me to answer you. 
-                  and reply If the sentence is correct, If not, provide the correct sentence.`,
+              you will reply to me in English to practice my spoken English.
+              limiting the reply to 40 words. ask me a question in your reply. 
+              you could ask me a question first. `,
+               
+
+                 //  I want you to correct my grammar mistakes.
+                  // after that put "|" and
+                  // Give 3 suggestions for sentences for me to answer you. 
+                  // and reply If the sentence is correct, If not, provide the correct sentence.
             },
             { role: 'user', content: transcription },
           ],
@@ -56,11 +70,7 @@ class ChatGPTCommunication extends Component {
 
       const chatGPTResponse = response.data.choices[0].message.content;
       this.setState({ aiResponse: chatGPTResponse, loading: false });
-      const responseParts = chatGPTResponse.split('|');
 
-      
-  
-   
     } catch (error) {
       console.error(
         'Error sending transcription to ChatGPT:',
@@ -72,24 +82,23 @@ class ChatGPTCommunication extends Component {
 
   render() {
     const { loading, error, userMessage, aiResponse } = this.state;
-    const responseParts = aiResponse.split('|');
     const { apiKey } = this.props;
+
     return (
       <div>
         <div>
-          <div>
             <strong>User:</strong> {userMessage}
-          </div>
           <div>
-            <strong>AI English Teacher:</strong> {responseParts[0]}
-            <br /> <br />
-            {responseParts[1]}
-
+            <strong>AI English Teacher:</strong>
+            <br /> 
+             {aiResponse}
           </div>
         </div>
-        
-      <OpenAITTSComponent apiKey={apiKey} input={responseParts[0]} />
-
+        <OpenAITTSComponent
+          ref={(ref) => (this.openAITTSComponentRef = ref)}
+          apiKey={apiKey}
+          input={aiResponse} // Use userMessage instead of aiResponse
+        />
       </div>
     );
   }
