@@ -17,6 +17,11 @@ class OpenAITTSComponent extends Component {
     const { voice } = this.state;
     const apiUrl = 'https://api.openai.com/v1/audio/speech';
 
+    if (!input) {
+      console.warn('Input is empty. Cannot stream audio.');
+      return;
+    }
+
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -49,8 +54,8 @@ class OpenAITTSComponent extends Component {
 
   playAudio = () => {
     const { audioElement } = this.state;
-    if (audioElement) {
-      audioElement.play();
+    if (audioElement && audioElement.paused) {
+      audioElement.play().catch((error) => console.error('Error playing audio:', error));
     }
   };
 
@@ -59,8 +64,12 @@ class OpenAITTSComponent extends Component {
   };
 
   playAgain = () => {
-    // Restart the audio playback
-    this.playAudio();
+    const { audioElement } = this.state;
+    if (audioElement && audioElement.paused) {
+      // Restart the audio playback
+      audioElement.currentTime = 0;
+      this.playAudio();
+    }
   };
 
   render() {

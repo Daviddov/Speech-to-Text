@@ -46,7 +46,7 @@ class SpeechToTextWithChatGPT extends Component {
 
   render() {
     const { apiKey, transcription, aiResponse } = this.state;
-
+    let aiResponseParts = aiResponse.split('|');
     return (
       <div>
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
@@ -60,8 +60,22 @@ class SpeechToTextWithChatGPT extends Component {
         <OpenAITTSComponent
           ref={(ref) => (this.openAITTSComponentRef = ref)}
           apiKey={apiKey}
-          input={aiResponse} // Use transcription instead of aiResponse
+          input={aiResponseParts[0]} // Use transcription instead of aiResponse
         />
+
+        <div>
+          <strong>User:</strong> {transcription}
+          <div>
+            <strong>AI English Teacher:</strong>
+            <br />
+            {aiResponseParts[0]}
+            <br />
+            <strong>suggestion:</strong>
+            <br />
+            {aiResponseParts[1]}
+          </div>
+        </div>
+
       </div>
     );
   }

@@ -1,4 +1,3 @@
-// ChatGPTCommunication.jsx
 
 import React, { Component } from 'react';
 import axios from 'axios';
@@ -30,7 +29,7 @@ class ChatGPTCommunication extends Component {
               content: `I want you to act as a spoken English teacher and improver. 
               you will reply to me in English to practice my spoken English.
               limiting the reply to 40 words. ask me a question in your reply. 
-              you could ask me a question first.`,
+              you could ask me a question first. after "|" Offer me a sentence to answer you`,
             },
             { role: 'user', content: transcription },
           ],
@@ -64,15 +63,6 @@ class ChatGPTCommunication extends Component {
 
     return (
       <div>
-        <div>
-          <strong>User:</strong> {userMessage}
-          <div>
-            <strong>AI English Teacher:</strong>
-            <br />
-            {/* Display aiResponse received as a prop */}
-            {this.props.aiResponse}
-          </div>
-        </div>
       </div>
     );
   }
