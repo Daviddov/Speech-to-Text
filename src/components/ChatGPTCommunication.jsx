@@ -25,15 +25,18 @@ class ChatGPTCommunication extends Component {
           messages: [
             {
               role: 'system',
-              content: `I want you to act as a spoken English teacher and improver. 
-              you will reply to me in English to practice my spoken English.
+              content: `enswer in 3 parts with sepatere pip 1.I want you to act as a spoken English teacher and improver. 
+              you will reply to me in English to practice my spoken English correct me Strictly.
               limiting the reply to 40 words. ask me a question in your reply. 
-              you could ask me a question first. after "|" Offer me a sentence to answer you`,
+              you could ask me a question first.
+              2. after "|" Offer me a sentence to answer you.
+              3.after "|" enswer If there are grammatical errors in my sentence, correct me Strictly else answer "correct".
+              remamber to enswer in 3 parts`,
             },
             { role: 'user', content: transcription },
           ],
           temperature: 0.7,
-          max_tokens: 150,
+          max_tokens: 250,
         },
         {
           headers: {

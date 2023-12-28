@@ -97,6 +97,8 @@ class SpeechToTextWithChatGPT extends Component {
 
         <div>
           <strong>User:</strong> {transcription}
+            <br />
+            {aiResponseParts[2]}
           <div>
             <strong>AI English Teacher:</strong>
             <br />
