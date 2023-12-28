@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { Component } from 'react';
 
-const OpenAITTSComponent = () => {
-  const [loading, setLoading] = useState(false);
+class OpenAITTSComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      voice: 'nova', // Default voice
+      audioElement: null,
+    };
+  }
 
-  const streamAudio = async () => {
-    setLoading(true);
+  streamAudio = async () => {
+    this.setState({ loading: true });
 
-    const apiKey = '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'; // Replace with your actual OpenAI API key
+    const { apiKey, input } = this.props;
+    const { voice } = this.state;
     const apiUrl = 'https://api.openai.com/v1/audio/speech';
 
     try {
@@ -19,31 +26,66 @@ const OpenAITTSComponent = () => {
         },
         body: JSON.stringify({
           model: 'tts-1',
-          voice: 'nova',   //alloy, echo, fable, onyx, nova, and shimmer
-          input: 'Hello world! This is a streaming test.',
+          voice,
+          input,
         }),
       });
 
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
 
-      // Use the generated audio URL as needed, e.g., play it in an audio element
+      // Create an Audio element and set it in the state
       const audioElement = new Audio(url);
-      audioElement.play();
+      this.setState({ audioElement }, () => {
+        // Start playing the audio automatically
+        this.playAudio();
+      });
     } catch (error) {
       console.error('Error streaming audio:', error);
     } finally {
-      setLoading(false);
+      this.setState({ loading: false });
     }
   };
 
-  return (
-    <div>
-      <button onClick={streamAudio} disabled={loading}>
-        Stream Audio
-      </button>
-    </div>
-  );
-};
+  playAudio = () => {
+    const { audioElement } = this.state;
+    if (audioElement) {
+      audioElement.play();
+    }
+  };
+
+  changeVoice = (newVoice) => {
+    this.setState({ voice: newVoice });
+  };
+
+  playAgain = () => {
+    // Restart the audio playback
+    this.playAudio();
+  };
+
+  render() {
+    const { loading, voice } = this.state;
+
+    return (
+      <div>
+        <button onClick={this.streamAudio} disabled={loading}>
+          Stream Audio
+        </button>
+
+        <select value={voice} onChange={(e) => this.changeVoice(e.target.value)}>
+          <option value="alloy">Alloy</option>
+          <option value="echo">Echo</option>
+          <option value="fable">Fable</option>
+          <option value="nova">Nova</option>
+          <option value="shimmer">Shimmer</option>
+        </select>
+
+        <button onClick={this.playAgain} disabled={loading}>
+          Play Again
+        </button>
+      </div>
+    );
+  }
+}
 
 export default OpenAITTSComponent;

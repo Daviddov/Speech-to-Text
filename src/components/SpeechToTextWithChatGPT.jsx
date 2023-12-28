@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
-import OpenAITTSComponent from './OpenAITTSComponent'; // Make sure to import the OpenAITTSComponent
 
 class SpeechToTextWithChatGPT extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      apiKey: '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',
       transcription: '',
     };
 
     this.handleSpeechRecognitionEnd = this.handleSpeechRecognitionEnd.bind(this);
-    this.openAITTSRef = React.createRef(); // Create a ref for OpenAITTSComponent
   }
 
   handleSpeechRecognitionEnd(transcription) {
     this.setState({ transcription });
     this.sendToChatGPT(transcription);
-    this.callOpenAITTS(transcription); // Call the OpenAI TTS function
   }
 
   async sendToChatGPT(transcription) {
@@ -26,17 +24,13 @@ class SpeechToTextWithChatGPT extends Component {
     await this.chatGPTCommunicationRef.sendToChatGPT(transcription);
   }
 
-  callOpenAITTS(transcription) {
-    // Call the OpenAI TTS function using the ref
-    this.openAITTSRef.current && this.openAITTSRef.current.callOpenAITTS(transcription);
-  }
-
   render() {
+    const { apiKey, transcription } = this.state;
+
     return (
       <div>
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
-        <ChatGPTCommunication ref={(ref) => (this.chatGPTCommunicationRef = ref)} />
-        <OpenAITTSComponent ref={this.openAITTSRef} />
+        <ChatGPTCommunication apiKey={apiKey} userMessage={transcription} ref={(ref) => (this.chatGPTCommunicationRef = ref)} />
       </div>
     );
   }

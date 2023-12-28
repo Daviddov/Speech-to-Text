@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import SpeakTextComponent from './SpeakTextComponent';
+import OpenAITTSComponent from './OpenAITTSComponent';
 
 class ChatGPTCommunication extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class ChatGPTCommunication extends Component {
 
   async sendToChatGPT(transcription) {
     try {
-      const apiKey = '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'; // Replace with your actual OpenAI API key
+      const { apiKey } = this.props;
       const apiUrl = 'https://api.openai.com/v1/chat/completions';
   
       this.setState({ loading: true, error: null });
@@ -38,10 +39,6 @@ class ChatGPTCommunication extends Component {
                   I want you to correct my grammar mistakes. after that put "|" and
                   Give 3 suggestions for sentences for me to answer you. 
                   and reply If the sentence is correct, If not, provide the correct sentence.`,
-              // I want you to act as an English teacher I will write you sentences and you will only answer as flow 
-              // 1. If the sentence is correct, answer "correct". If not, provide the correct sentence.
-              // 2. Continue the conversation. The answer should not be longer than 30 words and entertain.
-              // 3. Give 3 suggestions for sentences for me to answer you.
             },
             { role: 'user', content: transcription },
           ],
@@ -60,8 +57,8 @@ class ChatGPTCommunication extends Component {
       const chatGPTResponse = response.data.choices[0].message.content;
       this.setState({ aiResponse: chatGPTResponse, loading: false });
       const responseParts = chatGPTResponse.split('|');
-      // Speak the AI response
-      this.speakText(responseParts[0]);
+
+      
   
    
     } catch (error) {
@@ -76,7 +73,7 @@ class ChatGPTCommunication extends Component {
   render() {
     const { loading, error, userMessage, aiResponse } = this.state;
     const responseParts = aiResponse.split('|');
-
+    const { apiKey } = this.props;
     return (
       <div>
         <div>
@@ -90,7 +87,9 @@ class ChatGPTCommunication extends Component {
 
           </div>
         </div>
-        <SpeakTextComponent text={responseParts[0]} loading={loading} />
+        
+      <OpenAITTSComponent apiKey={apiKey} input={responseParts[0]} />
+
       </div>
     );
   }
