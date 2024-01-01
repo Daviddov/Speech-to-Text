@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class OpenAITTSComponent extends Component {
   constructor(props) {
@@ -10,47 +11,43 @@ class OpenAITTSComponent extends Component {
     };
   }
 
+  
   streamAudio = async () => {
     this.setState({ loading: true });
-
+  
     const { apiKey, input } = this.props;
     const { voice } = this.state;
-    const apiUrl = 'https://api.openai.com/v1/audio/speech';
-
+    const serverUrl = 'http://localhost:3000/api/streamAudio';
+  
     if (!input) {
       console.warn('Input is empty. Cannot stream audio.');
       return;
     }
-
+  
     try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'tts-1',
-          voice,
-          input,
-        }),
-      });
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-
-      // Create an Audio element and set it in the state
-      const audioElement = new Audio(url);
-      this.setState({ audioElement }, () => {
-        // Start playing the audio automatically
-        this.playAudio();
-      });
+      const response = await axios.post(serverUrl, { apiKey, input, voice }, { responseType: 'arraybuffer' });
+  
+      // Ensure the correct content type
+      const contentType = response.headers['content-type'];
+  
+      if (contentType && (contentType.startsWith('audio/') || contentType === 'application/octet-stream')) {
+        const blob = new Blob([response.data], { type: contentType });
+        const url = URL.createObjectURL(blob);
+  
+        const audioElement = new Audio(url);
+        this.setState({ audioElement }, () => {
+          this.playAudio();
+        });
+      } else {
+        console.error('Invalid content type:', contentType);
+      }
     } catch (error) {
       console.error('Error streaming audio:', error);
     } finally {
       this.setState({ loading: false });
     }
   };
+  
 
   playAudio = () => {
     const { audioElement } = this.state;
