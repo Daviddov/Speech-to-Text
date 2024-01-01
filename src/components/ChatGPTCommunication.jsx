@@ -13,12 +13,12 @@ class ChatGPTCommunication extends Component {
 
   async sendToChatGPT(transcription) {
     try {
-      const { apiKey, onAiResponse } = this.props;
+      const {  onAiResponse } = this.props;
       const serverUrl = 'http://localhost:3000/api/sendToChatGPT';
 
       this.setState({ loading: true, error: null });
 
-      const response = await axios.post(serverUrl, { apiKey, transcription });
+      const response = await axios.post(serverUrl, { transcription });
 
       const chatGPTResponse = response.data.chatGPTResponse;
       this.setState({ loading: false });
@@ -31,21 +31,6 @@ class ChatGPTCommunication extends Component {
         error.response ? error.response.data : error.message
       );
 
-      // Check if the error is related to the API key
-      if (error.response && error.response.status === 401) {
-        const userInput = prompt('Incorrect or missing API key. Please enter your API key:');
-        if (userInput) {
-          // Retry with the new API key
-          this.props.setApiKey(userInput);
-          // this.sendToChatGPT(transcription);
-        } else {
-          // Handle the case when the user cancels or enters an empty string
-          alert('API key is required for the application to work.');
-        }
-      } else {
-        // Handle other types of errors
-        this.setState({ loading: false, error: 'An error occurred. Please try again.' });
-      }
     }
   }
 

@@ -11,29 +11,28 @@ class OpenAITTSComponent extends Component {
     };
   }
 
-  
   streamAudio = async () => {
     this.setState({ loading: true });
-  
-    const { apiKey, input } = this.props;
+
+    const { input } = this.props;
     const { voice } = this.state;
     const serverUrl = 'http://localhost:3000/api/streamAudio';
-  
+
     if (!input) {
       console.warn('Input is empty. Cannot stream audio.');
       return;
     }
-  
+
     try {
-      const response = await axios.post(serverUrl, { apiKey, input, voice }, { responseType: 'arraybuffer' });
-  
+      const response = await axios.post(serverUrl, { input, voice }, { responseType: 'arraybuffer' });
+
       // Ensure the correct content type
       const contentType = response.headers['content-type'];
-  
+
       if (contentType && (contentType.startsWith('audio/') || contentType === 'application/octet-stream')) {
         const blob = new Blob([response.data], { type: contentType });
         const url = URL.createObjectURL(blob);
-  
+
         const audioElement = new Audio(url);
         this.setState({ audioElement }, () => {
           this.playAudio();
@@ -47,7 +46,6 @@ class OpenAITTSComponent extends Component {
       this.setState({ loading: false });
     }
   };
-  
 
   playAudio = () => {
     const { audioElement } = this.state;
@@ -60,17 +58,8 @@ class OpenAITTSComponent extends Component {
     this.setState({ voice: newVoice });
   };
 
-  playAgain = () => {
-    const { audioElement } = this.state;
-    if (audioElement && audioElement.paused) {
-      // Restart the audio playback
-      audioElement.currentTime = 0;
-      this.playAudio();
-    }
-  };
-
   render() {
-    const { loading, voice } = this.state;
+    const { loading, voice, audioElement } = this.state;
 
     return (
       <div>
@@ -86,9 +75,15 @@ class OpenAITTSComponent extends Component {
           <option value="shimmer">Shimmer</option>
         </select>
 
-        <button onClick={this.playAgain} disabled={loading}>
-          Play Again
-        </button>
+        {audioElement && (
+          <div>
+            <p>Audio Controls:</p>
+            <audio controls>
+              <source src={audioElement.src} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        )}
       </div>
     );
   }

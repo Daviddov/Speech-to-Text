@@ -1,6 +1,6 @@
 import React from 'react';
 
-class SpeakTextComponent extends React.Component {
+class SpeakText extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -10,12 +10,12 @@ class SpeakTextComponent extends React.Component {
 
   componentDidMount() {
     // Start speaking when the component mounts
-    this.speakText(this.props.text);
+    this.speakText(this.props.input);
   }
 
-  speakText = (text) => {
+  speakText = (input) => {
     const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(input);
 
     utterance.onend = () => {
       this.setState({ isSpeaking: false });
@@ -33,7 +33,7 @@ class SpeakTextComponent extends React.Component {
 
   handleButtonClick = () => {
     // Toggle between start and stop speaking
-    this.state.isSpeaking ? this.stopSpeaking() : this.speakText(this.props.text);
+    this.state.isSpeaking ? this.stopSpeaking() : this.speakText(this.props.input);
   };
 
   render() {
@@ -50,4 +50,4 @@ class SpeakTextComponent extends React.Component {
   }
 }
 
-export default SpeakTextComponent;
+export default SpeakText;
