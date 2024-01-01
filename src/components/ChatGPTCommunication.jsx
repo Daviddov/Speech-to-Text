@@ -14,39 +14,13 @@ class ChatGPTCommunication extends Component {
   async sendToChatGPT(transcription) {
     try {
       const { apiKey, onAiResponse } = this.props;
-      const apiUrl = 'https://api.openai.com/v1/chat/completions';
+      const serverUrl = 'http://localhost:3000/api/sendToChatGPT';
 
       this.setState({ loading: true, error: null });
 
-      const response = await axios.post(
-        apiUrl,
-        {
-          model: 'gpt-3.5-turbo-1106',
-          messages: [
-            {
-              role: 'system',
-              content: `enswer in 3 parts with sepatere pip 1.I want you to act as a spoken English teacher and improver. 
-              you will reply to me in English to practice my spoken English correct me Strictly.
-              limiting the reply to 40 words. ask me a question in your reply. 
-              you could ask me a question first.
-              2. after "|" Offer me a sentence to answer you.
-              3.after "|" enswer If there are grammatical errors in my sentence, correct me Strictly else answer "correct".
-              remamber to enswer in 3 parts`,
-            },
-            { role: 'user', content: transcription },
-          ],
-          temperature: 0.7,
-          max_tokens: 250,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
-      );
+      const response = await axios.post(serverUrl, { apiKey, transcription });
 
-      const chatGPTResponse = response.data.choices[0].message.content;
+      const chatGPTResponse = response.data.chatGPTResponse;
       this.setState({ loading: false });
 
       // Update the aiResponse in the parent component

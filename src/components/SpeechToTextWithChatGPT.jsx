@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
 import OpenAITTSComponent from './OpenAITTSComponent';
+import ExampleComponent from './ExampleComponent';
 
 class SpeechToTextWithChatGPT extends Component {
   constructor(props) {
@@ -80,6 +81,7 @@ class SpeechToTextWithChatGPT extends Component {
     let aiResponseParts = aiResponse.split('|');
     return (
       <div>
+        {/* <ExampleComponent /> */}
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <ChatGPTCommunication
           apiKey={apiKey}
