@@ -60,8 +60,8 @@ class SpeechToTextWithChatGPT extends Component {
           ref={(ref) => (this.chatGPTCommunicationRef = ref)}
         />
 
-          <TextToSpeech  ref={(ref) => (this.TextToSpeechRef = ref)}
-          input={aiResponseParts[0]}/>
+          {/* <TextToSpeech  ref={(ref) => (this.TextToSpeechRef = ref)} input={aiResponseParts[0]}/> */}
+         
         <OpenAITTSComponent
           ref={(ref) => (this.openAITTSComponentRef = ref)}
           input={aiResponseParts[0]} // Use transcription instead of aiResponse
