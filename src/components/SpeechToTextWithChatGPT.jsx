@@ -26,7 +26,7 @@ class SpeechToTextWithChatGPT extends Component {
       // Start the audio stream only if the response is non-empty
       if (aiResponse.trim() !== '') {
         this.openAITTSComponentRef.streamAudio();
-        this.TextToSpeechRef.handleSpeak();
+        // this.TextToSpeechRef.handleSpeak();
       }
     }
   }
