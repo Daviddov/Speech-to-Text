@@ -39,7 +39,6 @@ class ChatGPTCommunication extends Component {
 
     return (
       <div>
-        {/* Render loading spinner or error message if needed */}
       </div>
     );
   }
