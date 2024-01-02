@@ -14,7 +14,7 @@ class ChatGPTCommunication extends Component {
   async sendToChatGPT(transcription) {
     try {
       const {  onAiResponse } = this.props;
-      const serverUrl = 'http://localhost:3000/api/sendToChatGPT';
+      const serverUrl = 'https://tide-peppered-blackberry.glitch.me/api/sendToChatGPT';
 
       this.setState({ loading: true, error: null });
 

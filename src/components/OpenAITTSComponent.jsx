@@ -16,7 +16,7 @@ class OpenAITTSComponent extends Component {
 
     const { input } = this.props;
     const { voice } = this.state;
-    const serverUrl = 'http://localhost:3000/api/streamAudio';
+    const serverUrl = 'https://tide-peppered-blackberry.glitch.me/api/streamAudio';
 
     if (!input) {
       console.warn('Input is empty. Cannot stream audio.');
