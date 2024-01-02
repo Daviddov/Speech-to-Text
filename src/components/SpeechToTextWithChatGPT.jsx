@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
 import OpenAITTSComponent from './OpenAITTSComponent';
-// import SpeakText from './SpeakText';
+import SpeakText from './SpeakText';
 import TextToSpeech from './TextToSpeech';
 
 class SpeechToTextWithChatGPT extends Component {
@@ -51,7 +51,7 @@ class SpeechToTextWithChatGPT extends Component {
     let aiResponseParts = aiResponse.split('|');
     return (
       <div>
-        
+
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <ChatGPTCommunication
           userMessage={transcription}
