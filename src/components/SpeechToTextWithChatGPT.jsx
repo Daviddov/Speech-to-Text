@@ -12,25 +12,20 @@ class SpeechToTextWithChatGPT extends Component {
     this.state = {
       transcription: '',
       aiResponse: '',
-      password: '',
-
     };
 
     this.handleSpeechRecognitionEnd = this.handleSpeechRecognitionEnd.bind(this);
     this.handleAiResponse = this.handleAiResponse.bind(this);
-    this.handlePasswordInput = this.handlePasswordInput.bind(this);
-    this.handlePasswordSubmit = this.handlePasswordSubmit.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { aiResponse, password } = this.state;
+    const { aiResponse } = this.state;
 
     // Check if aiResponse has changed
     if (aiResponse !== prevState.aiResponse) {
-      // Start the audio stream only if the response is non-empty and password is correct
-      if (aiResponse.trim() !== '' && password === 'VIP') {
+      // Start the audio stream only if the response is non-empty
+      if (aiResponse.trim() !== '') {
         this.openAITTSComponentRef.streamAudio();
-      } else {
         this.TextToSpeechRef.handleSpeak();
       }
     }
@@ -46,39 +41,16 @@ class SpeechToTextWithChatGPT extends Component {
     this.setState({ aiResponse: response });
   }
 
-  handlePasswordInput(event) {
-    this.setState({ password: event.target.value });
-  }
-
-  handlePasswordSubmit(event) {
-    event.preventDefault();
-    // Handle password submission, you can add more validation if needed
-    // For simplicity, direct comparison is used here. In real applications, you might want to use more secure methods.
-    if (this.state.password === 'VIP') {
-      this.openAITTSComponentRef.streamAudio();
-    } else {
-      this.TextToSpeechRef.handleSpeak();
-    }
-  }
-  
   async sendToChatGPT(transcription) {
     // Forward the transcription to ChatGPTCommunication component for further handling
     await this.chatGPTCommunicationRef.sendToChatGPT(transcription);
   }
 
   render() {
-    const { transcription, aiResponse, password } = this.state;
+    const { transcription, aiResponse } = this.state;
     let aiResponseParts = aiResponse.split('|');
-
     return (
       <div>
-                <form onSubmit={this.handlePasswordSubmit}>
-          <label>
-            Password:
-            <input type="password" value={password} onChange={this.handlePasswordInput} />
-          </label>
-          <button type="submit">Submit</button>
-        </form>
         
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <ChatGPTCommunication

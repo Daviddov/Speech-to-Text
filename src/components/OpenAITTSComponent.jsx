@@ -63,9 +63,9 @@ class OpenAITTSComponent extends Component {
 
     return (
       <div>
-        {/* <button onClick={this.streamAudio} disabled={loading}> Stream Audio </button> */}
-         
-       
+        <button onClick={this.streamAudio} disabled={loading}>
+          Stream Audio
+        </button>
 
         <select value={voice} onChange={(e) => this.changeVoice(e.target.value)}>
           <option value="alloy">Alloy</option>

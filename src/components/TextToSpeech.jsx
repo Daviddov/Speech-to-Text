@@ -57,7 +57,7 @@ class TextToSpeech extends Component {
   render() {
     return (
       <div>
-        {/* <button onClick={this.handleSpeak}>Speak</button> */}
+        <button onClick={this.handleSpeak}>Speak</button>
         {this.state.audioUrl && (
           <audio
             controls
