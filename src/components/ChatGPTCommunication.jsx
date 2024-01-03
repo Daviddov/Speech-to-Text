@@ -13,14 +13,14 @@ class ChatGPTCommunication extends Component {
 
 
 
-  async sendToChatGPT(transcription) {
+  async sendToChatGPT(transcription, history) {
     try {
       const {  onAiResponse, userName, voiceName } = this.props;
       const serverUrl = 'https://tide-peppered-blackberry.glitch.me/api/sendToChatGPT';
 
       this.setState({ loading: true, error: null });
 
-      const response = await axios.post(serverUrl, { transcription, userName, voiceName });
+      const response = await axios.post(serverUrl, { transcription, history, userName, voiceName });
 
       const chatGPTResponse = response.data.chatGPTResponse;
       this.setState({ loading: false });

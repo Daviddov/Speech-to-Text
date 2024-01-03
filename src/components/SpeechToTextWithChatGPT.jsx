@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
 import OpenAITTSComponent from './OpenAITTSComponent';
-// import SpeakText from './SpeakText';
 import TextToSpeech from './TextToSpeech';
 
 class SpeechToTextWithChatGPT extends Component {
@@ -12,12 +11,14 @@ class SpeechToTextWithChatGPT extends Component {
       transcription: '',
       voice: 'nova', // Default voice
       aiResponse: '',
+      history: '',
     };
-    
+
+    // Binding event handlers
     this.handleSpeechRecognitionEnd = this.handleSpeechRecognitionEnd.bind(this);
     this.handleAiResponse = this.handleAiResponse.bind(this);
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     const { aiResponse, voice } = this.state;
     // Check if aiResponse has changed
@@ -29,30 +30,29 @@ class SpeechToTextWithChatGPT extends Component {
       }
     }
   }
-  
+
   changeVoice = (newVoice) => {
     this.setState({ voice: newVoice });
   };
 
   handleSpeechRecognitionEnd(transcription) {
     this.setState({ transcription });
-    this.sendToChatGPT(transcription);
+    this.sendToChatGPT(transcription, this.state.history); // Fix: use this.state.history
   }
 
   handleAiResponse(response) {
-    // Update the aiResponse in the state
-    this.setState({ aiResponse: response });
+    // Update the aiResponse and history in the state
+    this.setState({ aiResponse: response, history: response.split('|')[0] });
   }
 
-  async sendToChatGPT(transcription) {
+  async sendToChatGPT(transcription, history) {
     // Forward the transcription to ChatGPTCommunication component for further handling
-    await this.chatGPTCommunicationRef.sendToChatGPT(transcription);
+    await this.chatGPTCommunicationRef.sendToChatGPT(transcription, history);
   }
 
   render() {
-    
-    const { profile }= this.props;
-    const { transcription, voice, aiResponse } = this.state;
+    const { profile } = this.props;
+    const { transcription, voice, aiResponse, history } = this.state; // Fix: destructure history from state
     let aiResponseParts = aiResponse.split('|');
     return (
       <div>
@@ -69,6 +69,7 @@ class SpeechToTextWithChatGPT extends Component {
           userName={profile.name}
           voiceName={voice}
           userMessage={transcription}
+          history={history}
           aiResponse={aiResponse} // Pass aiResponse as a prop
           onAiResponse={this.handleAiResponse} // Pass the handler function
           ref={(ref) => (this.chatGPTCommunicationRef = ref)}

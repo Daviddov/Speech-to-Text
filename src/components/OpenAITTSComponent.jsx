@@ -31,7 +31,8 @@ class OpenAITTSComponent extends Component {
         const blob = new Blob([response.data], { type: contentType });
         const url = URL.createObjectURL(blob);
 
-        const audioElement = new Audio(url);
+        const audioElement = new Audio();
+        audioElement.src = url; // Set the source dynamically
         this.setState({ audioElement }, () => {
           this.playAudio();
         });
@@ -53,21 +54,23 @@ class OpenAITTSComponent extends Component {
   };
 
   render() {
-    const { loading, voice, audioElement } = this.state;
+    const { loading, audioElement } = this.state;
 
     return (
       <div>
-        <button onClick={this.streamAudio} disabled={loading}>
+        {/* <button onClick={this.streamAudio} disabled={loading}>
           Stream Audio
-        </button>
+        </button> */}
 
         {audioElement && (
           <div>
-            <p>Audio Controls:</p>
-            <audio controls>
-              <source src={audioElement.src} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
+              <div>
+          <p>Audio Controls:</p>
+          <audio controls key={audioElement.src}>
+            <source src={audioElement.src} type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
           </div>
         )}
       </div>
