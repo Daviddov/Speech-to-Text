@@ -6,7 +6,6 @@ class OpenAITTSComponent extends Component {
     super(props);
     this.state = {
       loading: false,
-      voice: 'nova', // Default voice
       audioElement: null,
     };
   }
@@ -14,8 +13,7 @@ class OpenAITTSComponent extends Component {
   streamAudio = async () => {
     this.setState({ loading: true });
 
-    const { input } = this.props;
-    const { voice } = this.state;
+    const { input, voice } = this.props;
     const serverUrl = 'https://tide-peppered-blackberry.glitch.me/api/streamAudio';
 
     if (!input) {
@@ -54,10 +52,6 @@ class OpenAITTSComponent extends Component {
     }
   };
 
-  changeVoice = (newVoice) => {
-    this.setState({ voice: newVoice });
-  };
-
   render() {
     const { loading, voice, audioElement } = this.state;
 
@@ -66,14 +60,6 @@ class OpenAITTSComponent extends Component {
         <button onClick={this.streamAudio} disabled={loading}>
           Stream Audio
         </button>
-
-        <select value={voice} onChange={(e) => this.changeVoice(e.target.value)}>
-          <option value="alloy">Alloy</option>
-          <option value="echo">Echo</option>
-          <option value="fable">Fable</option>
-          <option value="nova">Nova</option>
-          <option value="shimmer">Shimmer</option>
-        </select>
 
         {audioElement && (
           <div>

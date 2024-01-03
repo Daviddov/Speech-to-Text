@@ -11,14 +11,16 @@ class ChatGPTCommunication extends Component {
     };
   }
 
+
+
   async sendToChatGPT(transcription) {
     try {
-      const {  onAiResponse } = this.props;
+      const {  onAiResponse, userName, voiceName } = this.props;
       const serverUrl = 'https://tide-peppered-blackberry.glitch.me/api/sendToChatGPT';
 
       this.setState({ loading: true, error: null });
 
-      const response = await axios.post(serverUrl, { transcription });
+      const response = await axios.post(serverUrl, { transcription, userName, voiceName });
 
       const chatGPTResponse = response.data.chatGPTResponse;
       this.setState({ loading: false });
@@ -35,11 +37,11 @@ class ChatGPTCommunication extends Component {
   }
 
   render() {
-    const { loading, error, userMessage } = this.state;
+    const { loading, error,  userMessage } = this.state;
 
     return (
       <div>
-        {/* Render loading spinner or error message if needed */}
+
       </div>
     );
   }
