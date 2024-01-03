@@ -4,7 +4,9 @@ import ChatGPTCommunication from './ChatGPTCommunication';
 import OpenAITTSComponent from './OpenAITTSComponent';
 import TextToSpeech from './TextToSpeech';
 
-class SpeechToTextWithChatGPT extends Component {
+
+
+class TalkBot extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,6 +79,7 @@ class SpeechToTextWithChatGPT extends Component {
 
         {/* <TextToSpeech  ref={(ref) => (this.TextToSpeechRef = ref)} input={aiResponseParts[0]}/> */}
 
+ 
         <OpenAITTSComponent
           ref={(ref) => (this.openAITTSComponentRef = ref)}
           voice={voice}
@@ -100,4 +103,4 @@ class SpeechToTextWithChatGPT extends Component {
   }
 }
 
-export default SpeechToTextWithChatGPT;
+export default TalkBot;

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Button, IconButton } from '@mui/material';
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
-import SpeechToTextWithChatGPT from './SpeechToTextWithChatGPT';
 import './App.css';
+import TalkBot from './TalkBot';
+import GoogleIcon from 'mdi-material-ui/Google';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -35,32 +37,33 @@ function App() {
     setProfile(null);
   };
 
-  const responseMessage = (response) => {
-    console.log(response);
-    // setUser(response)
-};
-const errorMessage = (error) => {
-    console.log(error);
-};
   return (
     <div className="App">
       <h2>TalkBot</h2>
 
       {profile ? (
         <div>
-
           <img src={profile.picture} alt="user image" />
           <div>Name: {profile.name}</div>
           {/* <div>Email Address: {profile.email}</div> */}
-          <button onClick={logOut}>Log out</button>
-            <br/>
-            <br/>
-            <br/>
-          <SpeechToTextWithChatGPT profile={profile} />
+          <Button variant="contained" color="primary" onClick={logOut}>
+            Log out
+          </Button>
+          <br />
+          <br />
+          <br />
+          <TalkBot profile={profile} />
         </div>
       ) : (
         <>
-           <button onClick={() => login()}>Sign in with Google </button> 
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<GoogleIcon />}
+            onClick={() => login()}
+          >
+            Sign in with Google
+          </Button>
         </>
       )}
     </div>
