@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
 import OpenAITTSComponent from './OpenAITTSComponent';
-import TextToSpeech from './TextToSpeech';
-
-
+// import TextToSpeech from './TextToSpeech';
 
 class TalkBot extends Component {
   constructor(props) {
@@ -21,17 +19,17 @@ class TalkBot extends Component {
     this.handleAiResponse = this.handleAiResponse.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { aiResponse, voice } = this.state;
-    // Check if aiResponse has changed
-    if (aiResponse !== prevState.aiResponse) {
-      // Start the audio stream only if the response is non-empty
-      if (aiResponse.trim() !== '') {
-        this.openAITTSComponentRef.streamAudio();
-        // this.TextToSpeechRef.handleSpeak();
-      }
-    }
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   const { aiResponse, voice } = this.state;
+
+  //   // Check if aiResponse has changed
+  //   if (aiResponse !== prevState.aiResponse) {
+  //     // Start the audio stream only if the response is non-empty
+  //     if (aiResponse.trim() !== '') {
+  //       // this.TextToSpeechRef.handleSpeak();
+  //     }
+  //   }
+  // }
 
   changeVoice = (newVoice) => {
     this.setState({ voice: newVoice });
@@ -39,23 +37,23 @@ class TalkBot extends Component {
 
   handleSpeechRecognitionEnd(transcription) {
     this.setState({ transcription });
-    this.sendToChatGPT(transcription, this.state.history); // Fix: use this.state.history
+    this.sendToChatGPT(transcription, this.state.history);
   }
 
   handleAiResponse(response) {
-    // Update the aiResponse and history in the state
-    this.setState({ aiResponse: response, history: response.split('|')[0] });
+    const history = response.split('|')[0];
+    this.setState({ aiResponse: response, history });
   }
 
   async sendToChatGPT(transcription, history) {
-    // Forward the transcription to ChatGPTCommunication component for further handling
     await this.chatGPTCommunicationRef.sendToChatGPT(transcription, history);
   }
 
   render() {
     const { profile } = this.props;
-    const { transcription, voice, aiResponse, history } = this.state; // Fix: destructure history from state
-    let aiResponseParts = aiResponse.split('|');
+    const { transcription, voice, aiResponse, history } = this.state;
+    const aiResponseParts = aiResponse.split('|');
+
     return (
       <div>
         <select value={voice} onChange={(e) => this.changeVoice(e.target.value)}>
@@ -72,19 +70,12 @@ class TalkBot extends Component {
           voiceName={voice}
           userMessage={transcription}
           history={history}
-          aiResponse={aiResponse} // Pass aiResponse as a prop
-          onAiResponse={this.handleAiResponse} // Pass the handler function
+          aiResponse={aiResponse}
+          onAiResponse={this.handleAiResponse}
           ref={(ref) => (this.chatGPTCommunicationRef = ref)}
         />
 
         {/* <TextToSpeech  ref={(ref) => (this.TextToSpeechRef = ref)} input={aiResponseParts[0]}/> */}
-
- 
-        <OpenAITTSComponent
-          ref={(ref) => (this.openAITTSComponentRef = ref)}
-          voice={voice}
-          input={aiResponseParts[0]} // Use transcription instead of aiResponse
-        />
 
         <div>
           <strong>User:</strong> {transcription}

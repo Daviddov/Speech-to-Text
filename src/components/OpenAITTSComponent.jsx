@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 class OpenAITTSComponent extends Component {
   constructor(props) {
@@ -10,40 +9,38 @@ class OpenAITTSComponent extends Component {
     };
   }
 
-  streamAudio = async () => {
-    this.setState({ loading: true });
+  componentDidMount() {
+    // When the component mounts, check if there is a valid audio source in props and set it up.
+    this.setupAudio();
+  }
 
-    const { input, voice } = this.props;
-    const serverUrl = 'https://tide-peppered-blackberry.glitch.me/api/streamAudio';
+  componentDidUpdate(prevProps) {
+    // Check for changes in props, and update the audio source if needed.
+    if (prevProps.audioData !== this.props.audioData) {
+      this.setupAudio();
+    }
+  }
 
-    if (!input) {
-      console.warn('Input is empty. Cannot stream audio.');
+  setupAudio = () => {
+    const { audioData } = this.props;
+
+    if (!audioData) {
+      console.warn('No audio data provided in props.');
       return;
     }
 
-    try {
-      const response = await axios.post(serverUrl, { input, voice }, { responseType: 'arraybuffer' });
+    // Convert binary data to ArrayBuffer
+    const arrayBuffer = new Uint8Array(audioData.data).buffer;
 
-      // Ensure the correct content type
-      const contentType = response.headers['content-type'];
+    // Create a Blob from the ArrayBuffer
+    const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+    const url = URL.createObjectURL(blob);
 
-      if (contentType && (contentType.startsWith('audio/') || contentType === 'application/octet-stream')) {
-        const blob = new Blob([response.data], { type: contentType });
-        const url = URL.createObjectURL(blob);
-
-        const audioElement = new Audio();
-        audioElement.src = url; // Set the source dynamically
-        this.setState({ audioElement }, () => {
-          this.playAudio();
-        });
-      } else {
-        console.error('Invalid content type:', contentType);
-      }
-    } catch (error) {
-      console.error('Error streaming audio:', error);
-    } finally {
-      this.setState({ loading: false });
-    }
+    const audioElement = new Audio();
+    audioElement.src = url;
+    this.setState({ audioElement }, () => {
+      this.playAudio();
+    });
   };
 
   playAudio = () => {
@@ -58,19 +55,20 @@ class OpenAITTSComponent extends Component {
 
     return (
       <div>
-        {/* <button onClick={this.streamAudio} disabled={loading}>
-          Stream Audio
+        {/* You can add a button or any other UI element to trigger audio playback */}
+        {/* <button onClick={this.playAudio} disabled={loading}>
+          Play Audio
         </button> */}
 
         {audioElement && (
           <div>
-              <div>
-          <p>Audio Controls:</p>
-          <audio controls key={audioElement.src}>
-            <source src={audioElement.src} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
+            <div>
+              <p>Audio Controls:</p>
+              <audio controls key={audioElement.src}>
+                <source src={audioElement.src} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
           </div>
         )}
       </div>
