@@ -43,11 +43,11 @@ function App() {
 
       {profile ? (
         <div>
-          <img src={profile.picture} alt="user image" />
-          <div>Name: {profile.name}</div>
+          {/* <img src={profile.picture} alt="user image" /> */}
           {/* <div>Email Address: {profile.email}</div> */}
+          Wellcome: {profile.name}  
           <Button variant="contained" color="primary" onClick={logOut}>
-            Log out
+           Log out
           </Button>
           <br />
           <br />

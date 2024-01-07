@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
 import OpenAITTSComponent from './OpenAITTSComponent';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 // import TextToSpeech from './TextToSpeech';
 
 class TalkBot extends Component {
@@ -56,14 +57,20 @@ class TalkBot extends Component {
 
     return (
       <div>
-        <select value={voice} onChange={(e) => this.changeVoice(e.target.value)}>
-          <option value="alloy">Alloy</option>
-          <option value="echo">Echo</option>
-          <option value="fable">Fable</option>
-          <option value="nova">Nova</option>
-          <option value="shimmer">Shimmer</option>
-        </select>
-
+        <FormControl fullWidth>
+  <InputLabel >Voice</InputLabel>
+  <Select
+    value={voice}
+    label="Age"
+    onChange={(e) => this.changeVoice(e.target.value)}
+  >
+    <MenuItem value={"alloy"}>Alloy </MenuItem>
+    <MenuItem value={"echo"}>Echo</MenuItem>
+    <MenuItem value={"fable"}>Fable</MenuItem>
+    <MenuItem value={"nova"}>Nova</MenuItem>
+    <MenuItem value={"shimmer"}>Shimmer</MenuItem>
+  </Select>
+</FormControl>
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <ChatGPTCommunication
           userName={profile.name}
