@@ -4,14 +4,15 @@ import ChatGPTCommunication from './ChatGPTCommunication';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import ChatComponent from './ChatComponent'; // Import the new component
 
-
 class TalkBot extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      initialMessageSent: false, // Flag to track if the initial message has been sent
       transcription: '',
       voice: 'nova', // Default voice
       aiResponse: '',
+      chatGPTSuggestion: '',
       history: '',
       chatMessages: [], // New state to hold chat messages
     };
@@ -20,9 +21,21 @@ class TalkBot extends Component {
     this.handleSpeechRecognitionEnd = this.handleSpeechRecognitionEnd.bind(this);
     this.handleAiResponse = this.handleAiResponse.bind(this);
   }
+ 
 
   changeVoice = (newVoice) => {
     this.setState({ voice: newVoice });
+  };
+
+  handleResetState = () => {
+    this.setState({
+      transcription: '',
+      voice: 'nova',
+      aiResponse: '',
+      chatGPTSuggestion: '',
+      history: '',
+      chatMessages: [],
+    });
   };
 
   handleSpeechRecognitionEnd(transcription) {
@@ -34,12 +47,12 @@ class TalkBot extends Component {
   }));
   }
 
-  handleAiResponse(response) {
+  handleAiResponse(response, Suggestion) {
     const history = response.split('|')[0];
-    console.log(response);
     const chatMessage = { content: response.split('|')[0], isAI: true };
     this.setState((prevState) => ({
       aiResponse: response,
+      chatGPTSuggestion: Suggestion,
       history,
       chatMessages: [...prevState.chatMessages, chatMessage],
     }));
@@ -51,7 +64,7 @@ class TalkBot extends Component {
 
   render() {
     const { profile } = this.props;
-    const { transcription, voice, aiResponse, history, chatMessages } = this.state;
+    const { transcription, voice, aiResponse, history, chatMessages, chatGPTSuggestion} = this.state;
    
    
     const imageSyle = { width: '50px', height: '50px', borderRadius: '50%' , marginRight: '8px'};
@@ -96,6 +109,11 @@ class TalkBot extends Component {
 </MenuItem>
   </Select>
 </FormControl>
+<ChatComponent messages={chatMessages} />
+          
+          <strong>suggestion:</strong>
+          <br />
+          {chatGPTSuggestion} 
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <ChatGPTCommunication
           userName={profile.name}
@@ -106,17 +124,9 @@ class TalkBot extends Component {
           onAiResponse={this.handleAiResponse}
           ref={(ref) => (this.chatGPTCommunicationRef = ref)}
         />
+        <button onClick={this.handleResetState}>Reset State</button>
 
         {/* <TextToSpeech  ref={(ref) => (this.TextToSpeechRef = ref)} input={aiResponseParts[0]}/> */}
-
-        <div>
-
-        <ChatComponent messages={chatMessages} />
-          
-            <strong>suggestion:</strong>
-            <br />
-            {aiResponse.split('|')[1]} 
-          </div> 
         </div>
 
     );

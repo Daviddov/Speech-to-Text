@@ -10,6 +10,7 @@ class ChatGPTCommunication extends Component {
       error: null,
       userMessage: '',
       chatGPTResponse: null,
+      chatGPTSuggestion: null,
       audioData: null,
     };
   }
@@ -31,7 +32,7 @@ class ChatGPTCommunication extends Component {
       const { onAiResponse, userName, voiceName } = this.props;
       const server = "https://tide-peppered-blackberry.glitch.me" ;
       const local = "http://localhost:3001";
-      const serverUrl = `${local}/api/sendToChatGPT`; // || server
+      const serverUrl = `${local}/sendToChatGPTAndAudio`; // || server
 
       this.setState({ loading: true, error: null });
 
@@ -39,12 +40,14 @@ class ChatGPTCommunication extends Component {
 
       const chatGPTResponse = response.data.chatGPTResponse;
       const blobResponse = response.data.blobResponse;
+      const chatGPTSuggestion = response.data.chatGPTSuggestion;
+
 
       // Update the state with the chatGPTResponse and audioData
-      this.setState({ loading: false, chatGPTResponse, audioData: blobResponse });
+      this.setState({ loading: false, chatGPTResponse, audioData: blobResponse, chatGPTSuggestion });
 
       // Update the aiResponse in the parent component
-      onAiResponse(chatGPTResponse);
+      onAiResponse(chatGPTResponse, chatGPTSuggestion);
     } catch (error) {
       console.error('Error sending transcription to ChatGPT:', error.response ? error.response.data : error.message);
       this.setState({ loading: false, error: 'An error occurred. Please try again.' });
