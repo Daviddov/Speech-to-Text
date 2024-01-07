@@ -45,11 +45,11 @@ function App() {
         <div>
           {/* <img src={profile.picture} alt="user image" /> */}
           {/* <div>Email Address: {profile.email}</div> */}
-          Wellcome: {profile.name}  
-          <Button variant="contained" color="primary" onClick={logOut}>
+          <Button variant="contained" color="primary" startIcon={<GoogleIcon />} onClick={logOut} >
            Log out
           </Button>
           <br />
+          Wellcome: {profile.name}  
           <br />
           <br />
           <TalkBot profile={profile} />

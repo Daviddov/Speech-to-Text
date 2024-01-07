@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class OpenAITTSComponent extends Component {
+class BlubToAudio extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,4 +76,4 @@ class OpenAITTSComponent extends Component {
   }
 }
 
-export default OpenAITTSComponent;
+export default BlubToAudio;

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
-import OpenAITTSComponent from './OpenAITTSComponent';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-// import TextToSpeech from './TextToSpeech';
+import ChatComponent from './ChatComponent'; // Import the new component
+
 
 class TalkBot extends Component {
   constructor(props) {
@@ -13,6 +13,7 @@ class TalkBot extends Component {
       voice: 'nova', // Default voice
       aiResponse: '',
       history: '',
+      chatMessages: [], // New state to hold chat messages
     };
 
     // Binding event handlers
@@ -20,31 +21,29 @@ class TalkBot extends Component {
     this.handleAiResponse = this.handleAiResponse.bind(this);
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { aiResponse, voice } = this.state;
-
-  //   // Check if aiResponse has changed
-  //   if (aiResponse !== prevState.aiResponse) {
-  //     // Start the audio stream only if the response is non-empty
-  //     if (aiResponse.trim() !== '') {
-  //       // this.TextToSpeechRef.handleSpeak();
-  //     }
-  //   }
-  // }
-
   changeVoice = (newVoice) => {
     this.setState({ voice: newVoice });
   };
 
   handleSpeechRecognitionEnd(transcription) {
-    this.setState({ transcription });
     this.sendToChatGPT(transcription, this.state.history);
+    const chatMessage = { content: transcription, isAI: false };
+    this.setState({ transcription });
+    this.setState((prevState) => ({
+    chatMessages: [...prevState.chatMessages, chatMessage]
+  }));
   }
 
   handleAiResponse(response) {
     const history = response.split('|')[0];
-    this.setState({ aiResponse: response, history });
-  }
+    console.log(response);
+    const chatMessage = { content: response.split('|')[0], isAI: true };
+    this.setState((prevState) => ({
+      aiResponse: response,
+      history,
+      chatMessages: [...prevState.chatMessages, chatMessage],
+    }));
+    }
 
   async sendToChatGPT(transcription, history) {
     await this.chatGPTCommunicationRef.sendToChatGPT(transcription, history);
@@ -52,23 +51,49 @@ class TalkBot extends Component {
 
   render() {
     const { profile } = this.props;
-    const { transcription, voice, aiResponse, history } = this.state;
-    const aiResponseParts = aiResponse.split('|');
-
+    const { transcription, voice, aiResponse, history, chatMessages } = this.state;
+   
+   
+    const imageSyle = { width: '50px', height: '50px', borderRadius: '50%' , marginRight: '8px'};
     return (
       <div>
-        <FormControl fullWidth>
+        <FormControl >
   <InputLabel >Voice</InputLabel>
   <Select
     value={voice}
     label="Age"
     onChange={(e) => this.changeVoice(e.target.value)}
   >
-    <MenuItem value={"alloy"}>Alloy </MenuItem>
-    <MenuItem value={"echo"}>Echo</MenuItem>
-    <MenuItem value={"fable"}>Fable</MenuItem>
-    <MenuItem value={"nova"}>Nova</MenuItem>
-    <MenuItem value={"shimmer"}>Shimmer</MenuItem>
+    <MenuItem value={"alloy"}> 
+    <td/> <img
+  src={"https://raw.githubusercontent.com/Daviddov/Speech-to-Text/master/media/IMG-20240106-WA0007.jpg"}
+  style={imageSyle}
+/>Alloy
+</MenuItem>
+    <MenuItem value={"echo"}>
+    <td/> <img
+  src={"https://raw.githubusercontent.com/Daviddov/Speech-to-Text/master/media/IMG-20240106-WA0004.jpg"}
+  style={imageSyle}
+/>Echo
+</MenuItem>
+    <MenuItem value={"fable"}> 
+    <td/> <img
+  src={"https://raw.githubusercontent.com/Daviddov/Speech-to-Text/master/media/IMG-20240106-WA0002.jpg"}
+  style={imageSyle}
+/>Fable
+</MenuItem>
+    <MenuItem value={"nova"}> 
+    <td/> <img
+  src={"https://raw.githubusercontent.com/Daviddov/Speech-to-Text/master/media/IMG-20240106-WA0003.jpg"}
+  style={imageSyle}
+/>Nova
+</MenuItem>
+    <MenuItem value={"shimmer"}> 
+    <td/> <img
+  src={"https://raw.githubusercontent.com/Daviddov/Speech-to-Text/master/media/IMG-20240106-WA0005.jpg"}
+  style={imageSyle}
+/>Shimmer
+</MenuItem>
   </Select>
 </FormControl>
         <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
@@ -85,18 +110,15 @@ class TalkBot extends Component {
         {/* <TextToSpeech  ref={(ref) => (this.TextToSpeechRef = ref)} input={aiResponseParts[0]}/> */}
 
         <div>
-          <strong>User:</strong> {transcription}
-          <div>
-            <strong>AI English Teacher:</strong>
-            <br />
-            {aiResponseParts[0]}
-            <br />
+
+        <ChatComponent messages={chatMessages} />
+          
             <strong>suggestion:</strong>
             <br />
-            {aiResponseParts[1]}
-          </div>
+            {aiResponse.split('|')[1]} 
+          </div> 
         </div>
-      </div>
+
     );
   }
 }

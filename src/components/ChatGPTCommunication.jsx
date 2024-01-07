@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import OpenAITTSComponent from './OpenAITTSComponent';
+import BlubToAudio from './BlubToAudio';
 
 class ChatGPTCommunication extends Component {
   constructor(props) {
@@ -31,7 +31,7 @@ class ChatGPTCommunication extends Component {
       const { onAiResponse, userName, voiceName } = this.props;
       const server = "https://tide-peppered-blackberry.glitch.me" ;
       const local = "http://localhost:3001";
-      const serverUrl = `${server}/api/sendToChatGPT`; // || server
+      const serverUrl = `${local}/api/sendToChatGPT`; // || server
 
       this.setState({ loading: true, error: null });
 
@@ -57,7 +57,7 @@ class ChatGPTCommunication extends Component {
     return (
       <div>
         {/* Render the OpenAITTSComponent with the audio data from the server */}
-        <OpenAITTSComponent ref={(ref) => (this.openAITTSComponentRef = ref)} audioData={audioData} />
+        <BlubToAudio ref={(ref) => (this.openAITTSComponentRef = ref)} audioData={audioData} />
 
         {/* You can render other components or UI elements here */}
       </div>
