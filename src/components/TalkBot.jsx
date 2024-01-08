@@ -32,7 +32,7 @@ class TalkBot extends Component {
       transcription: '',
       voice: 'nova',
       aiResponse: '',
-      chatGPTSuggestion: '',
+      chatGPTSuggestion: null,
       history: '',
       chatMessages: [],
     });
@@ -47,16 +47,27 @@ class TalkBot extends Component {
   }));
   }
 
-  handleAiResponse(response, Suggestion) {
-    const history = response.split('|')[0];
-    const chatMessage = { content: response.split('|')[0], isAI: true };
+  handleAiResponse = async (aiResponse) => {
+    const chatMessage = { content: aiResponse, isAI: true };
     this.setState((prevState) => ({
-      aiResponse: response,
-      chatGPTSuggestion: Suggestion,
-      history,
+      aiResponse,
+      history:aiResponse,
       chatMessages: [...prevState.chatMessages, chatMessage],
     }));
+
+    try {
+      const chatGPTSuggestion = await this.chatGPTCommunicationRef.sendChatGPTSuggestion(aiResponse);
+  
+      // this.setState({ chatGPTSuggestion });
+    } catch (error) {
+      console.error('Error sending transcription to ChatGPT for suggestion:', error);
+      // Handle the error appropriately, e.g., display an error message to the user
     }
+    }
+
+    onResponseSuggestion = (chatGPTSuggestion) => {
+      this.setState({ chatGPTSuggestion });
+    };
 
   async sendToChatGPT(transcription, history) {
     await this.chatGPTCommunicationRef.sendToChatGPT(transcription, history);
@@ -122,6 +133,7 @@ class TalkBot extends Component {
           history={history}
           aiResponse={aiResponse}
           onAiResponse={this.handleAiResponse}
+          onResponseSuggestion={this.onResponseSuggestion}
           ref={(ref) => (this.chatGPTCommunicationRef = ref)}
         />
         <button onClick={this.handleResetState}>Reset State</button>
