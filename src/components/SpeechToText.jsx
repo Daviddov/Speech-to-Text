@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MicIcon from '@mui/icons-material/Mic';
 import StopIcon from '@mui/icons-material/Stop';
-import { Button } from '@mui/material';
+import { Button, ListItem } from '@mui/material';
 
 class SpeechToText extends Component {
   constructor(props) {
@@ -50,24 +50,36 @@ class SpeechToText extends Component {
 
     return (
       <div>
+      <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <ListItem
+          sx={{
+            bgcolor: '#DCF8C6',
+            width: '300px',
+            borderRadius: '8px',
+            margin: 'auto',
+            height: '30px',
+          }}
+          >
+          {transcription}
+        </ListItem>
         <Button
           onClick={this.toggleListening}
           variant="contained"
           style={{
-            backgroundColor: 'primary',
+            backgroundColor: '#37874c',
             borderRadius: '50%',
-            width: '50px',
-            height: '50px',
+            width: '30px',
+            height: '30px',
           }}
-        >
+          >
           {listening ? (
-            <StopIcon style={{ fontSize: '30px' }} />
-          ) : (
-            <MicIcon style={{ fontSize: '30px', color: 'white' }} />
-          )}
+            <StopIcon style={{ fontSize: '20px' }} />
+            ) : (
+              <MicIcon style={{ fontSize: '20px', color: 'white' }} />
+              )}
         </Button>
-        <p>Transcription: {transcription}</p>
       </div>
+              </div>
     );
   }
 }

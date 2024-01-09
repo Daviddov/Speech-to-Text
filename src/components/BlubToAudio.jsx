@@ -63,7 +63,6 @@ class BlubToAudio extends Component {
         {audioElement && (
           <div>
             <div>
-              <p>Audio Controls:</p>
               <audio controls key={audioElement.src}>
                 <source src={audioElement.src} type="audio/mpeg" />
                 Your browser does not support the audio element.

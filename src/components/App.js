@@ -39,13 +39,13 @@ function App() {
 
   return (
     <div className="App">
-      <h2>TalkBot</h2>
+      <h2>English TalkBot</h2>
 
       {profile ? (
         <div>
           {/* <img src={profile.picture} alt="user image" /> */}
           {/* <div>Email Address: {profile.email}</div> */}
-          <Button variant="contained" color="primary" startIcon={<GoogleIcon />} onClick={logOut} >
+          <Button variant="outlined" color="primary" startIcon={<GoogleIcon />} onClick={logOut} >
            Log out
           </Button>
           <br />
@@ -57,7 +57,7 @@ function App() {
       ) : (
         <>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             startIcon={<GoogleIcon />}
             onClick={() => login()}

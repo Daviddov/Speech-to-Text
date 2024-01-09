@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SpeechToText from './SpeechToText';
 import ChatGPTCommunication from './ChatGPTCommunication';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import ChatComponent from './ChatComponent'; // Import the new component
 
 class TalkBot extends Component {
@@ -21,7 +21,12 @@ class TalkBot extends Component {
     this.handleSpeechRecognitionEnd = this.handleSpeechRecognitionEnd.bind(this);
     this.handleAiResponse = this.handleAiResponse.bind(this);
   }
- 
+  
+    componentDidMount() {
+      const startMassage = "who you are";
+    this.sendToChatGPT(startMassage, null);
+    }
+  
 
   changeVoice = (newVoice) => {
     this.setState({ voice: newVoice });
@@ -58,7 +63,6 @@ class TalkBot extends Component {
     try {
       const chatGPTSuggestion = await this.chatGPTCommunicationRef.sendChatGPTSuggestion(aiResponse);
   
-      // this.setState({ chatGPTSuggestion });
     } catch (error) {
       console.error('Error sending transcription to ChatGPT for suggestion:', error);
       // Handle the error appropriately, e.g., display an error message to the user
@@ -121,11 +125,6 @@ class TalkBot extends Component {
   </Select>
 </FormControl>
 <ChatComponent messages={chatMessages} />
-          
-          <strong>suggestion:</strong>
-          <br />
-          {chatGPTSuggestion} 
-        <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <ChatGPTCommunication
           userName={profile.name}
           voiceName={voice}
@@ -136,6 +135,9 @@ class TalkBot extends Component {
           onResponseSuggestion={this.onResponseSuggestion}
           ref={(ref) => (this.chatGPTCommunicationRef = ref)}
         />
+            <strong>suggestion:</strong><br/>
+            {chatGPTSuggestion}
+        <SpeechToText onSpeechRecognitionEnd={this.handleSpeechRecognitionEnd} />
         <button onClick={this.handleResetState}>Reset State</button>
 
         {/* <TextToSpeech  ref={(ref) => (this.TextToSpeechRef = ref)} input={aiResponseParts[0]}/> */}
