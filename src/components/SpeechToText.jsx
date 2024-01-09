@@ -29,21 +29,31 @@ class SpeechToText extends Component {
       this.setState({ listening: false });
     } else {
       this.recognition.start();
-
+  
+      let finalTranscription = '';
+  
       this.recognition.onresult = (event) => {
-        const transcript = event.results[event.results.length - 1][0].transcript;
-        this.setState({ transcription: transcript });
+        const interimTranscript = event.results[event.results.length - 1][0].transcript;
+        const isFinal = event.results[event.results.length - 1].isFinal;
+  
+        if (isFinal) {
+          finalTranscription += interimTranscript + ' ';
+          this.setState({ transcription: finalTranscription.trim() });
+        } else {
+          this.setState({ transcription: interimTranscript });
+        }
       };
-
+  
       // Modify the onend event handler
       this.recognition.onend = () => {
         this.setState({ listening: false });
         this.props.onSpeechRecognitionEnd(this.state.transcription);
       };
-
+  
       this.setState({ listening: true });
     }
   }
+  
 
   render() {
     const { listening, transcription } = this.state;

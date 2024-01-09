@@ -37,9 +37,10 @@ class ChatGPTCommunication extends Component {
   
       // Set loading state and clear any previous errors
       this.setState({ loading: true, error: null });
-  
+      const tokens = 30;
+
       // Send the AI response to the server
-      const response = await axios.post(serverUrl, { aiResponse });
+      const response = await axios.post(serverUrl, { aiResponse, tokens});
   
       // Extract chatGPTResponse from the server response
       const chatGPTSuggestion = response.data.chatGPTResponse;
@@ -57,7 +58,7 @@ class ChatGPTCommunication extends Component {
     }
   }
   
-  async sendToChatGPT(transcription, history) {
+  async sendToChatGPT(transcription, history, tokens) {
     try {
       const { onAiResponse, userName, voiceName } = this.props;
       const server = "https://tide-peppered-blackberry.glitch.me" ;
@@ -66,7 +67,7 @@ class ChatGPTCommunication extends Component {
 
       this.setState({ loading: true, error: null });
 
-      const response = await axios.post(serverUrl, { transcription, history, userName, voiceName });
+      const response = await axios.post(serverUrl, { transcription, history, userName, voiceName ,tokens});
 
       const chatGPTResponse = response.data.chatGPTResponse;
       const blobResponse = response.data.blobResponse;

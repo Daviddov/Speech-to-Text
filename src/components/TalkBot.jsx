@@ -24,7 +24,8 @@ class TalkBot extends Component {
   
     componentDidMount() {
       const startMassage = "who you are";
-    this.sendToChatGPT(startMassage, null);
+      const tokens = 10;
+    this.sendToChatGPT(startMassage, null, tokens);
     }
   
 
@@ -44,7 +45,8 @@ class TalkBot extends Component {
   };
 
   handleSpeechRecognitionEnd(transcription) {
-    this.sendToChatGPT(transcription, this.state.history);
+    const tokens = 50;
+    this.sendToChatGPT(transcription, this.state.history, tokens);
     const chatMessage = { content: transcription, isAI: false };
     this.setState({ transcription });
     this.setState((prevState) => ({
@@ -73,8 +75,8 @@ class TalkBot extends Component {
       this.setState({ chatGPTSuggestion });
     };
 
-  async sendToChatGPT(transcription, history) {
-    await this.chatGPTCommunicationRef.sendToChatGPT(transcription, history);
+  async sendToChatGPT(transcription, history, tokens) {
+    await this.chatGPTCommunicationRef.sendToChatGPT(transcription, history, tokens);
   }
 
   render() {
