@@ -18,7 +18,7 @@ class SpeechToText extends Component {
 
     this.recognition.continuous = true;
     this.recognition.interimResults = true;
-    this.recognition.lang = 'en-US';
+    // this.recognition.lang = 'en-US';
 
     this.toggleListening = this.toggleListening.bind(this);
   }
@@ -61,6 +61,7 @@ class SpeechToText extends Component {
     return (
       <div>
       <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+
         <ListItem
           sx={{
             bgcolor: '#DCF8C6',
